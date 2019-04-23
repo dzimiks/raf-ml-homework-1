@@ -45,17 +45,17 @@ data['y'] = (data['y'] - np.mean(data['y'])) / np.std(data['y'])
 # Feature matrix creation
 # This variable controls the number of features, ie. degree of polynomial
 nb_features = 6
-print('Originalne vrednosti (prve 3):')
+print('Original values (first 3):')
 print(data['x'][:3])
-print('Feature matrica (prva 3 reda):')
+print('Feature matrix (first 3 rows):')
 data['x'] = create_feature_matrix(data['x'], nb_features)
 print(data['x'][:3, :])
 
 # Plotting all data
-plt.scatter(data['x'][:, 0], data['y'])
-plt.xlabel('x')
-plt.ylabel('y')
-plt.show()
+# plt.scatter(data['x'][:, 0], data['y'])
+# plt.xlabel('x')
+# plt.ylabel('y')
+# plt.show()
 
 # Step 2: Model.
 X = tf.placeholder(shape=(None, nb_features), dtype=tf.float32)
