@@ -11,12 +11,29 @@ prikazi karaktera reči, karakteristike kao što je kontekst pojedinačnih reči
 Imajući dovoljno podataka, upotrebe i konteksta, word2vec može napraviti vrlo precizne pretpostavke
 o značenju reči na osnovu prethodnih pojavljivanja.
 
+Ako želite da uporedite dve rečenice i vidite koliko su slične: možete pronaći sličnost kosinusa između tih vektora.
+Ako imate problem sa pronalaženjem dokumenta, možete uporediti vektor upita sa vektorima dokumenata koristeći
+KL Divergence i dohvatiti relevantne dokumente.
+
 Izlaz word2vec neuronske mreže je rečnik u kojem svaki element ima vektor koji je priključen na njega,
 koji se može ubaciti u mrežu dubokog učenja ili se jednostavno traži da se otkriju odnosi između reči.
 
 =====================
 
 2. Šta je "​k-fold cross-validation"​ i koji proces zamenjuje?
+
+Unakrsna validacija je postupak ponovnog uzorkovanja koji se koristi za procenu modela mašinskog učenja
+na ograničenom uzorku podataka.
+
+K-Fold Cross Validation je mesto gde je određeni skup podataka podeljen na K broj sekcija gde se svaki
+preklop koristi kao testiranje u nekom trenutku. To je popularan metod zato što je jednostavan za razumevanje
+i zato što generalno dovodi do manje pristrasne ili manje optimistične procene veštine modela od drugih metoda.
+
+K-fold cross-validation (kFCV) deli N tačaka na k međusobno isključivih podskupova jednake veličine.
+Proces tada izostavlja jedan od k podskupova kao skup validacija i trenira na preostalim podskupovima.
+Ovaj proces se ponavlja k puta, izostavljajući jedan od k podskupova svaki put.
+
+TODO: PROCES???
 
 =====================
 
