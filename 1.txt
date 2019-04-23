@@ -1,1 +1,24 @@
-TODO popuniti odgovorima na pitanja iz problema 1
+1. Šta je "​word2vec"? Objasniti smisao/primenu, bez detalja implementacije.
+
+Ovaj model se koristi za učenje vektorskih reprezentacija reči, nazvanih "word embeddings".
+Word2vec je dvoslojna neuronska mreža koja obrađuje tekst. Njegov unos je tekstualni korpus,
+a njegov izlaz je skup vektora: vektori karakteristika reči u tom korpusu. Može se dobiti korišćenjem
+dve metode (obe uključuju neuronske mreže): Skip Gram i Common Bag Of Words (CBOW).
+
+Svrha i korisnost word2vec-a je da grupiše vektore sličnih reči u vektorskom prostoru.
+To jest, matematički detektuje sličnosti. Word2vec stvara vektore koji su distribuirani numerički
+prikazi karaktera reči, karakteristike kao što je kontekst pojedinačnih reči. To čini bez ljudske intervencije.
+Imajući dovoljno podataka, upotrebe i konteksta, word2vec može napraviti vrlo precizne pretpostavke
+o značenju reči na osnovu prethodnih pojavljivanja.
+
+Izlaz word2vec neuronske mreže je rečnik u kojem svaki element ima vektor koji je priključen na njega,
+koji se može ubaciti u mrežu dubokog učenja ili se jednostavno traži da se otkriju odnosi između reči.
+
+=====================
+
+2. Šta je "​k-fold cross-validation"​ i koji proces zamenjuje?
+
+=====================
+
+3. Šta je "​linearna separabilnost"​ (​linear separability​)? Da li su podaci iz skupa logreg_data.csv​ linearno separabilni?
+
