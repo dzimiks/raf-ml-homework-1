@@ -20,22 +20,22 @@ def polynomial_regression(input_data, nb_samples, nb_features, lambda_param, col
 	data['x'] = create_feature_matrix(data['x'], nb_features)
 
 	# Korak 2: Model.
-	X = tf.placeholder(shape=(None, nb_features), dtype=tf.float32)
-	Y = tf.placeholder(shape=None, dtype=tf.float32)
-	w = tf.Variable(tf.zeros(nb_features))
-	bias = tf.Variable(0.0)
+	X = tf.placeholder(shape=(None, nb_features), dtype=tf.float32, name='X')
+	Y = tf.placeholder(shape=None, dtype=tf.float32, name='Y')
+	w = tf.Variable(tf.zeros(nb_features), name='w')
+	bias = tf.Variable(0.0, name='bias')
 
-	w_col = tf.reshape(w, (nb_features, 1))
-	hyp = tf.add(tf.matmul(X, w_col), bias)
+	w_col = tf.reshape(w, (nb_features, 1), name='w_col')
+	hyp = tf.add(tf.matmul(X, w_col), bias, name='hyp')
 
 	# Korak 3: Funkcija troška i optimizacija.
 	# L2 regularizacija.
-	Y_col = tf.reshape(Y, (-1, 1))
-	loss = tf.add(tf.reduce_mean(tf.square(hyp - Y_col)), lambda_param * tf.nn.l2_loss(w))
+	Y_col = tf.reshape(Y, (-1, 1), name='Y_col')
+	loss = tf.add(tf.reduce_mean(tf.square(hyp - Y_col)), lambda_param * tf.nn.l2_loss(w), name='loss')
 
 	# Prelazimo na AdamOptimizer jer se prost GradientDescent lose snalazi sa
 	# slozenijim funkcijama.
-	opt_op = tf.train.AdamOptimizer().minimize(loss)
+	opt_op = tf.train.AdamOptimizer(name='opt_op').minimize(loss)
 
 	# Korak 4: Trening.
 	with tf.Session() as sess:
@@ -56,19 +56,22 @@ def polynomial_regression(input_data, nb_samples, nb_features, lambda_param, col
 			# U svakoj desetoj epohi ispisujemo prosečan loss.
 			epoch_loss /= nb_samples
 			if (epoch + 1) % 10 == 0:
-				print('Epoch: {}/{}| Avg loss: {:.5f}'.format(epoch + 1, nb_epochs,
-															  epoch_loss))
+				print('Epoch: {}/{}| Avg loss: {:.5f}'.format(epoch + 1, nb_epochs, epoch_loss))
 
 		# Ispisujemo i plotujemo finalnu vrednost parametara.
 		w_val = sess.run(w)
 		bias_val = sess.run(bias)
-		print('w = ', w_val, 'bias = ', bias_val)
+
+		print('w =', w_val)
+		print('bias =', bias_val)
+
 		xs = create_feature_matrix(np.linspace(-2, 4, 100), nb_features)
 		hyp_val = sess.run(hyp, feed_dict={X: xs})  # Bez Y jer nije potrebno.
 		plt.plot(xs[:, 0].tolist(), hyp_val.tolist(), color=color)
 		plt.xlim([-2, 2])
 		plt.ylim([-3, 4])
 
+		file_writer = tf.summary.FileWriter('logs/', sess.graph)
 		return sess.run(loss, feed_dict={X: data['x'], Y: data['y']})
 
 
