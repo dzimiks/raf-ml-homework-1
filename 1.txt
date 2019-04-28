@@ -39,3 +39,8 @@ TODO: PROCES???
 
 3. Šta je "​linearna separabilnost"​ (​linear separability​)? Da li su podaci iz skupa logreg_data.csv​ linearno separabilni?
 
+Linearna separabilnost je važan koncept u neuronskim mrežama. Ideja je da proverite da li možete da odvojite tačke
+u n-dimenzionalnom prostoru koristeći samo n-1 dimenzije. Dva skupa (crvenih i plavih tačaka) su linearno separabilna
+ako postoji barem jedna linija u ravni sa svim plavim tačkama na jednoj strani linije i svim crvenim tačkama na drugoj strani.
+Podaci iz fajla logreg_data.csv nisu linearno separabilni jer ne možemo povući pravu koja će podeliti dva skupa tako da se
+nijedna tačka iz drugog skupa ne nalazi u prvom i obrnuto.
