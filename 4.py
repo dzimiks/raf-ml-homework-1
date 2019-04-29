@@ -7,7 +7,7 @@ import numpy as np
 import math
 import os
 
-VOCAB_SIZE = 1000
+VOCAB_SIZE = 700
 
 
 class MultinomialNaiveBayes:
@@ -56,8 +56,8 @@ class MultinomialNaiveBayes:
                 prob += cnt * np.log(self.like[c][w])
             probs[c] = prob
         # Trazimo klasu sa najvecom verovatnocom
-        print('\"Probabilites\" for a test BoW (with log):')
-        print(probs)
+        # print('\"Probabilites\" for a test BoW (with log):')
+        # print(probs)
         prediction = np.argmax(probs)
         return prediction
 
@@ -78,8 +78,16 @@ class MultinomialNaiveBayes:
         return prediction
 
 
+def occ_score(word, doc):
+    return 1 if word in doc else 0
+
+
 def numocc_score(word, doc):
     return doc.count(word)
+
+
+def freq_score(word, doc):
+    return doc.count(word) / len(doc)
 
 
 def clean_data(corpus, labels):
@@ -89,11 +97,13 @@ def clean_data(corpus, labels):
     # Cistimo korpus
     print('Cleaning the corpus...')
     clean_corpus = []
-    stop_punc = set(stopwords.words('english')).union(set(punctuation)).union({'br', '...'})
+    stop_punc = set(stopwords.words('english')).union(set(punctuation)).union({'br'})
+    table = str.maketrans('', '', punctuation)
     for doc in corpus:
         words = wordpunct_tokenize(doc)
         words_lower = [w.lower() for w in words]
-        words_filtered = [w for w in words_lower if w not in stop_punc and '<' not in w and '>' not in w and ')' not in w and '(' not in w]
+        words_stripped = [w.translate(table) for w in words_lower]
+        words_filtered = [w for w in words_stripped if w not in stop_punc and w.isalpha()]
         words_stemmed = [porter.stem(w) for w in words_filtered]
         # print('Final:', words_stemmed)
         clean_corpus.append(words_stemmed)
@@ -102,31 +112,27 @@ def clean_data(corpus, labels):
     # Kreiramo vokabular
     print('Creating the vocab...')
     vocab_dict = dict()
-    #   vocab_set = set()
     for doc in clean_corpus:
         for word in doc:
-            #       vocab_set.add(word)
             vocab_dict.setdefault(word, 0)
             vocab_dict[word] += 1
 
-    #   vocab = list(vocab_set)
+    print(len(vocab_dict))
     vocab = sorted(vocab_dict, key=vocab_dict.get, reverse=True)[:VOCAB_SIZE]
+    # for word in vocab:
+    #     print(word, vocab_dict[word])
 
     print('Vocab:', list(zip(vocab, range(len(vocab)))))
     print('Feature vector size: ', len(vocab))
 
     # 1: Bag of Words model
     print('Creating BOW features...')
-    X = np.zeros((len(clean_corpus), len(vocab)), dtype=np.float32)
+    X = np.zeros((len(clean_corpus), len(vocab)), dtype=np.float64)
     for doc_idx in range(len(clean_corpus)):
         doc = clean_corpus[doc_idx]
         X[doc_idx] = create_bow(doc, vocab)
-        # for word_idx in range(len(vocab)):
-        #     word = vocab[word_idx]
-        #     cnt = numocc_score(word, doc)
-        #     X[doc_idx][word_idx] = cnt
 
-    Y = np.zeros(len(clean_corpus), dtype=np.int8)
+    Y = np.zeros(len(clean_corpus), dtype=np.int32)
     for i in range(len(Y)):
         Y[i] = labels[i]
 
@@ -134,10 +140,10 @@ def clean_data(corpus, labels):
 
 
 def create_bow(doc, vocab):
-    bow = np.zeros(len(vocab), dtype=np.float32)
+    bow = np.zeros(len(vocab), dtype=np.float64)
     for word_idx in range(len(vocab)):
         word = vocab[word_idx]
-        cnt = numocc_score(word, doc)
+        cnt = occ_score(word, doc)
         bow[word_idx] = cnt
     return bow
 
@@ -201,17 +207,20 @@ def main():
         doc = test_corpus[i]
         label = test_labels[i]
         bow = create_bow(doc, vocab)
+        # print()
         # print(bow)
         # bow = np.zeros(VOCAB_SIZE)
 
         prediction = model.predict(bow)
+        # print(test_corpus[i])
         print('Predicted class (with log): ', class_names[prediction], class_names[test_labels[i]])
-        if prediction == test_labels[i]:
-            success += 1
+
+        success += prediction == test_labels[i]
         # prediction = model.predict_multiply(test_bow)
         # print('Predicted class (without log): ', class_names[prediction])
 
     print(success / len(test_corpus))
+
 
 if __name__ == '__main__':
     main()
