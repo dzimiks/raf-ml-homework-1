@@ -22,25 +22,35 @@ koji se može ubaciti u mrežu dubokog učenja ili se jednostavno traži da se o
 
 2. Šta je "​k-fold cross-validation"​ i koji proces zamenjuje?
 
-Unakrsna validacija je postupak ponovnog uzorkovanja koji se koristi za procenu modela mašinskog učenja
-na ograničenom uzorku podataka.
-
-K-Fold Cross Validation je mesto gde je određeni skup podataka podeljen na K broj sekcija gde se svaki
-preklop koristi kao testiranje u nekom trenutku. To je popularan metod zato što je jednostavan za razumevanje
-i zato što generalno dovodi do manje pristrasne ili manje optimistične procene veštine modela od drugih metoda.
+K-Fold Cross validacija je tehnika koja podrazumeva nasumičnu podelu skupa podataka na k podskupova otprilike jednakih
+veličina. Prvi podskup se koristi testiranje, a model se trenira na preostalih k-1 podskupova. Ovaj postupak se ponavlja
+k puta, gdje se svaki put mjenja podskup koji se koristi za testiranje. K-Fold CV greška se dobija tako što se uzme
+srednja vrednost od svih k ponavljanja algoritma.
 
 K-fold cross-validation (kFCV) deli N tačaka na k međusobno isključivih podskupova jednake veličine.
 Proces tada izostavlja jedan od k podskupova kao skup validacija i trenira na preostalim podskupovima.
 Ovaj proces se ponavlja k puta, izostavljajući jedan od k podskupova svaki put.
 
-TODO: PROCES???
+Unakrsna validacija je postupak ponovnog uzorkovanja koji se koristi za procenu modela mašinskog učenja
+na ograničenom uzorku podataka. To je popularan metod zato što je jednostavan za razumevanje
+i zato što generalno dovodi do manje pristrasne ili manje optimistične procene veštine modela od drugih metoda.
+
+Obično skup podataka delimo na trening skup, validacioni skup i test skup. Npr. 60%, 20%, 20%.
+Na ovaj način smo iskoristili samo 60% podataka za trening.
+Ovaj proces se može zameniti sa K-Fold CV, zato što u svakoj od K iteracija mi koristimo drugačiji podksup za validaciju,
+a preostalih k-1 podskupova za trening
 
 =====================
 
 3. Šta je "​linearna separabilnost"​ (​linear separability​)? Da li su podaci iz skupa logreg_data.csv​ linearno separabilni?
 
+Za skup tačaka (podataka) u n-dimenzionalnom prostoru kažemo da je linearno separabilan ako postoji hiperravan (n-1
+dimenzionalna) koja deli prostor na 2 polu-prostora takva da su sve tačke prve klase u jednom polu-prostoru a sve tačke
+druge klase u drugom polu-prostoru.
+
 Linearna separabilnost je važan koncept u neuronskim mrežama. Ideja je da proverite da li možete da odvojite tačke
-u n-dimenzionalnom prostoru koristeći samo n-1 dimenzije. Dva skupa (crvenih i plavih tačaka) su linearno separabilna
+u n-dimenzionalnom prostoru koristeći samo n-1 dimenzija. U 2D dva skupa (crvenih i plavih tačaka) su linearno separabilna
 ako postoji barem jedna linija u ravni sa svim plavim tačkama na jednoj strani linije i svim crvenim tačkama na drugoj strani.
-Podaci iz fajla logreg_data.csv nisu linearno separabilni jer ne možemo povući pravu koja će podeliti dva skupa tako da se
-nijedna tačka iz drugog skupa ne nalazi u prvom i obrnuto.
+
+Podaci iz fajla logreg_data.csv nisu linearno separabilni jer ne možemo povući pravu koja će podeliti ravan na 2 poluravni,
+tako da se sve tačke prve klase nalaze u jednoj poluravni, a sve tačke druge klase u drugoj poluravni.
