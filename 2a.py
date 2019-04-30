@@ -40,8 +40,8 @@ def polynomial_regression(input_data, nb_samples, nb_features, color):
 	with tf.Session() as sess:
 		sess.run(tf.global_variables_initializer())
 
-		# Izvršavamo 100 epoha treninga.
-		nb_epochs = 100
+		# Izvršavamo 200 epoha treninga.
+		nb_epochs = 200
 		for epoch in range(nb_epochs):
 
 			# Stochastic Gradient Descent.
@@ -55,18 +55,17 @@ def polynomial_regression(input_data, nb_samples, nb_features, color):
 			# U svakoj desetoj epohi ispisujemo prosečan loss.
 			epoch_loss /= nb_samples
 			if (epoch + 1) % 10 == 0:
-				print('Epoch: {}/{}| Avg loss: {:.5f}'.format(epoch + 1, nb_epochs,
-															  epoch_loss))
+				print('Epoch: {}/{}| Avg loss: {:.5f}'.format(epoch + 1, nb_epochs, epoch_loss))
 
 		# Ispisujemo i plotujemo finalnu vrednost parametara.
 		w_val = sess.run(w)
 		bias_val = sess.run(bias)
 		print('w = ', w_val, 'bias = ', bias_val)
-		xs = create_feature_matrix(np.linspace(-2, 4, 100), nb_features)
+		xs = create_feature_matrix(np.linspace(-10, 10, 500), nb_features)
 		hyp_val = sess.run(hyp, feed_dict={X: xs})  # Bez Y jer nije potrebno.
 		plt.plot(xs[:, 0].tolist(), hyp_val.tolist(), color=color)
-		plt.xlim([-2, 2])
-		plt.ylim([-3, 4])
+		plt.xlim([-10, 10])
+		plt.ylim([-10, 10])
 
 		return sess.run(loss, feed_dict={X: data['x'], Y: data['y']})
 
@@ -94,6 +93,8 @@ def main():
 
 	# Iscrtavanje podataka
 	plt.scatter(data['x'], data['y'])
+	plt.xlabel('X value')
+	plt.ylabel('Y value')
 
 	colors = ['g', 'm', 'b', 'r', 'k', 'y']
 	losses = []
@@ -115,3 +116,10 @@ def main():
 
 if __name__ == '__main__':
 	main()
+
+
+# Mozemo primetiti da polinomi stepena 3, 4, 5 i 6 dobro aproksimiraju skup podataka i imaju loss blizu 0.1.
+# Polinom stepena 3 ima najmanji loss (jedini ispod 0.11).
+
+# Polinomi stepena 1 i 2 su losija aproksimacija i imaju loss oko 0.3
+# Polinom stepena 1 definise pravu koja nije dobra aproksimacija podataka.
