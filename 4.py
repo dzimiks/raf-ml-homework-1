@@ -7,7 +7,7 @@ import numpy as np
 import math
 import os
 
-VOCAB_SIZE = 2000
+VOCAB_SIZE = 500
 
 
 class MultinomialNaiveBayes:
@@ -102,7 +102,34 @@ def get_clean_doc(doc):
 	return words_stemmed
 
 
-def clean_data(corpus, labels):
+def create_vocab(corpus):
+	# Kreiramo vokabular
+	print('Creating the vocab...')
+	vocab_dict = dict()
+	for doc in corpus:
+		for word in doc:
+			vocab_dict.setdefault(word, 0)
+			vocab_dict[word] += 1
+
+	return sorted(vocab_dict, key=vocab_dict.get, reverse=True)[:VOCAB_SIZE]
+
+
+def create_feature_matrix(corpus, labels, vocab):
+	# 1: Bag of Words model
+	print('Creating BOW features...')
+	X = np.zeros((len(corpus), len(vocab)), dtype=np.float64)
+	for doc_idx in range(len(corpus)):
+		doc = corpus[doc_idx]
+		X[doc_idx] = create_bow(doc, vocab)
+
+	Y = np.zeros(len(corpus), dtype=np.int32)
+	for i in range(len(Y)):
+		Y[i] = labels[i]
+
+	return X, Y
+
+
+def clean_data(corpus):
 	# Priprema podataka
 	porter = PorterStemmer()
 
@@ -112,33 +139,7 @@ def clean_data(corpus, labels):
 	for doc in corpus:
 		clean_corpus.append(get_clean_doc(doc))
 
-	# Kreiramo vokabular
-	print('Creating the vocab...')
-	vocab_dict = dict()
-	for doc in clean_corpus:
-		for word in doc:
-			vocab_dict.setdefault(word, 0)
-			vocab_dict[word] += 1
-
-	vocab = sorted(vocab_dict, key=vocab_dict.get, reverse=True)[:VOCAB_SIZE]
-	# for word in vocab:
-	#     print(word, vocab_dict[word])
-
-	# print('Vocab:', list(zip(vocab, range(len(vocab)))))
-	print('Feature vector size: ', len(vocab))
-
-	# 1: Bag of Words model
-	print('Creating BOW features...')
-	X = np.zeros((len(clean_corpus), len(vocab)), dtype=np.float64)
-	for doc_idx in range(len(clean_corpus)):
-		doc = clean_corpus[doc_idx]
-		X[doc_idx] = create_bow(doc, vocab)
-
-	Y = np.zeros(len(clean_corpus), dtype=np.int32)
-	for i in range(len(Y)):
-		Y[i] = labels[i]
-
-	return X, Y, vocab
+	return clean_corpus
 
 
 def create_bow(doc, vocab):
@@ -175,6 +176,20 @@ def read_data():
 	return corpus, labels
 
 
+def get_top_k(corpus, labels, k, label):
+	cnt = 0
+	count_dict = dict()
+	for i in range(len(corpus)):
+		if labels[i] == label:
+			cnt += 1
+			for word in corpus[i]:
+				count_dict.setdefault(word, 0)
+				count_dict[word] += 1
+
+	print(cnt)
+	return sorted(count_dict, key=count_dict.get, reverse=True)[:k]
+
+
 def main():
 	np.set_printoptions(precision=12, linewidth=200)
 
@@ -186,17 +201,21 @@ def main():
 	train_labels = labels[:limit]
 
 	test_corpus = corpus[limit:]
+	test_corpus = clean_data(test_corpus)
+
 	test_labels = labels[limit:]
 
 	print(len(train_corpus), len(train_labels))
 	print(len(test_corpus), len(test_labels))
 
-	X, Y, vocab = clean_data(train_corpus, train_labels)
-	# print(vocab)
+	train_corpus = clean_data(train_corpus)
+	vocab = create_vocab(train_corpus)
+	print(vocab)
+	X, Y = create_feature_matrix(train_corpus, train_labels, vocab)
+
 	print()
 	print(X)
 	print(Y)
-	print(len(Y))
 	print()
 
 	class_names = ['Negative', 'Positive']
@@ -210,8 +229,9 @@ def main():
 	FN = 0
 
 	print()
+	print('Running tests...')
 	for i in range(len(test_corpus)):
-		doc = get_clean_doc(test_corpus[i])
+		doc = test_corpus[i]
 		label = test_labels[i]
 		bow = create_bow(doc, vocab)
 
@@ -236,8 +256,11 @@ def main():
 	print(TP + FN + FP + TN)
 	conf_mat = [[TN, FP], [FN, TP]]
 
-	print(conf_mat)
 	print('Accuracy = {}'.format(acc))
+	print('Confussion matrix', conf_mat)
+
+	print('Top 5 in negative', get_top_k(train_corpus, train_labels, 5, 0))
+	print('Top 5 in postiive', get_top_k(train_corpus, train_labels, 5, 1))
 
 
 if __name__ == '__main__':
