@@ -74,7 +74,6 @@ def polynomial_regression(input_data, nb_samples, nb_features, lambda_param, col
 		plt.xlim([-2, 2])
 		plt.ylim([-3, 4])
 
-		file_writer = tf.summary.FileWriter('logs/', sess.graph)
 		return sess.run(loss, feed_dict={X: data['x'], Y: data['y']})
 
 
@@ -121,7 +120,8 @@ def main():
 	plt.ylabel('Loss')
 	plt.show()
 
-	writer = tf.summary.FileWriter('.')
+	# Cuvamo graf kako bismo ga ucitali u TensorBoard
+	writer = tf.summary.FileWriter('logs/')
 	writer.add_graph(tf.get_default_graph())
 	writer.flush()
 
@@ -129,6 +129,5 @@ def main():
 if __name__ == '__main__':
 	main()
 
-
-# Najmanji loss se dobije kad je lambda=0
+# Najmanji loss se dobije kad je lambda = 0
 # Kako raste lambda tako raste i loss
