@@ -61,11 +61,11 @@ def polynomial_regression(input_data, nb_samples, nb_features, color):
 		w_val = sess.run(w)
 		bias_val = sess.run(bias)
 		print('w = ', w_val, 'bias = ', bias_val)
-		xs = create_feature_matrix(np.linspace(-10, 10, 500), nb_features)
+		xs = create_feature_matrix(np.linspace(-2, 4, 100), nb_features)
 		hyp_val = sess.run(hyp, feed_dict={X: xs})  # Bez Y jer nije potrebno.
 		plt.plot(xs[:, 0].tolist(), hyp_val.tolist(), color=color)
-		plt.xlim([-10, 10])
-		plt.ylim([-10, 10])
+		plt.xlim([-2, 2])
+		plt.ylim([-3, 4])
 
 		return sess.run(loss, feed_dict={X: data['x'], Y: data['y']})
 
