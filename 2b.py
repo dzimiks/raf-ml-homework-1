@@ -44,8 +44,8 @@ def polynomial_regression(input_data, nb_samples, nb_features, lambda_param, col
 	with tf.Session() as sess:
 		sess.run(tf.global_variables_initializer())
 
-		# Izvršavamo 100 epoha treninga.
-		nb_epochs = 100
+		# Izvršavamo 200 epoha treninga.
+		nb_epochs = 200
 		for epoch in range(nb_epochs):
 
 			# Stochastic Gradient Descent.
@@ -59,7 +59,7 @@ def polynomial_regression(input_data, nb_samples, nb_features, lambda_param, col
 			# U svakoj desetoj epohi ispisujemo prosečan loss.
 			epoch_loss /= nb_samples
 			if (epoch + 1) % 10 == 0:
-				print('Epoch: {}/{}| Avg loss: {:.5f}'.format(epoch + 1, nb_epochs, epoch_loss))
+				print('Epoch: {}/{} | Avg loss: {:.5f}'.format(epoch + 1, nb_epochs, epoch_loss))
 
 		# Ispisujemo i plotujemo finalnu vrednost parametara.
 		w_val = sess.run(w)
@@ -100,6 +100,8 @@ def main():
 
 	# Iscrtavanje podataka
 	plt.scatter(data['x'], data['y'])
+	plt.xlabel('X value')
+	plt.ylabel('Y value')
 
 	colors = ['g', 'm', 'b', 'r', 'k', 'y', 'c']
 	losses = []
