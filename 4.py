@@ -7,7 +7,7 @@ import numpy as np
 import math
 import os
 
-VOCAB_SIZE = 1500
+VOCAB_SIZE = 10000
 
 
 class MultinomialNaiveBayes:
@@ -90,6 +90,18 @@ def freq_score(word, doc):
 	return doc.count(word) / len(doc)
 
 
+def get_clean_doc(doc):
+	porter = PorterStemmer()
+	stop_punc = set(stopwords.words('english')).union(set(punctuation)).union({'br'})
+	table = str.maketrans('', '', punctuation)
+	words = wordpunct_tokenize(doc)
+	words_lower = [w.lower() for w in words]
+	words_stripped = [w.translate(table) for w in words_lower]  # izbaci sve znakove iz rijeci
+	words_filtered = [w for w in words_stripped if w not in stop_punc and w.isalpha()]
+	words_stemmed = [porter.stem(w) for w in words_filtered]
+	return words_stemmed
+
+
 def clean_data(corpus, labels):
 	# Priprema podataka
 	porter = PorterStemmer()
@@ -97,17 +109,8 @@ def clean_data(corpus, labels):
 	# Cistimo korpus
 	print('Cleaning the corpus...')
 	clean_corpus = []
-	stop_punc = set(stopwords.words('english')).union(set(punctuation)).union({'br'})
-	table = str.maketrans('', '', punctuation)
 	for doc in corpus:
-		words = wordpunct_tokenize(doc)
-		words_lower = [w.lower() for w in words]
-		words_stripped = [w.translate(table) for w in words_lower] # izbaci sve znakove iz rijeci
-		words_filtered = [w for w in words_stripped if w not in stop_punc and w.isalpha()]
-		words_stemmed = [porter.stem(w) for w in words_filtered]
-		# print('Final:', words_stemmed)
-		clean_corpus.append(words_stemmed)
-	# Primetiti razliku u vokabularu kada se koraci izostave
+		clean_corpus.append(get_clean_doc(doc))
 
 	# Kreiramo vokabular
 	print('Creating the vocab...')
@@ -117,12 +120,11 @@ def clean_data(corpus, labels):
 			vocab_dict.setdefault(word, 0)
 			vocab_dict[word] += 1
 
-	print(len(vocab_dict))
 	vocab = sorted(vocab_dict, key=vocab_dict.get, reverse=True)[:VOCAB_SIZE]
 	# for word in vocab:
 	#     print(word, vocab_dict[word])
 
-	print('Vocab:', list(zip(vocab, range(len(vocab)))))
+	# print('Vocab:', list(zip(vocab, range(len(vocab)))))
 	print('Feature vector size: ', len(vocab))
 
 	# 1: Bag of Words model
@@ -190,7 +192,7 @@ def main():
 	print(len(test_corpus), len(test_labels))
 
 	X, Y, vocab = clean_data(train_corpus, train_labels)
-	print(vocab)
+	# print(vocab)
 	print()
 	print(X)
 	print(Y)
@@ -204,7 +206,7 @@ def main():
 	success = 0
 	print()
 	for i in range(len(test_corpus)):
-		doc = test_corpus[i]
+		doc = get_clean_doc(test_corpus[i])
 		label = test_labels[i]
 		bow = create_bow(doc, vocab)
 		# print()
@@ -213,7 +215,7 @@ def main():
 
 		prediction = model.predict(bow)
 		# print(test_corpus[i])
-		print('Predicted class (with log): ', class_names[prediction], class_names[test_labels[i]])
+		# print('Predicted class (with log): ', class_names[prediction], class_names[test_labels[i]])
 
 		if prediction == test_labels[i]:
 			success += 1
