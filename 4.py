@@ -209,9 +209,6 @@ def main():
 		doc = get_clean_doc(test_corpus[i])
 		label = test_labels[i]
 		bow = create_bow(doc, vocab)
-		# print()
-		# print(bow)
-		# bow = np.zeros(VOCAB_SIZE)
 
 		prediction = model.predict(bow)
 		# print(test_corpus[i])
