@@ -23,22 +23,12 @@ koji se može ubaciti u mrežu dubokog učenja ili se jednostavno traži da se o
 2. Šta je "​k-fold cross-validation"​ i koji proces zamenjuje?
 
 K-Fold Cross validacija je tehnika koja podrazumeva nasumičnu podelu skupa podataka na k podskupova otprilike jednakih
-veličina. Prvi podskup se koristi testiranje, a model se trenira na preostalih k-1 podskupova. Ovaj postupak se ponavlja
-k puta, gdje se svaki put mjenja podskup koji se koristi za testiranje. K-Fold CV greška se dobija tako što se uzme
-srednja vrednost od svih k ponavljanja algoritma.
-
-K-fold cross-validation (kFCV) deli N tačaka na k međusobno isključivih podskupova jednake veličine.
-Proces tada izostavlja jedan od k podskupova kao skup validacija i trenira na preostalim podskupovima.
-Ovaj proces se ponavlja k puta, izostavljajući jedan od k podskupova svaki put.
-
-Unakrsna validacija je postupak ponovnog uzorkovanja koji se koristi za procenu modela mašinskog učenja
-na ograničenom uzorku podataka. To je popularan metod zato što je jednostavan za razumevanje
-i zato što generalno dovodi do manje pristrasne ili manje optimistične procene veštine modela od drugih metoda.
+veličina. Jedan podskup se koristi za testiranje, a model se trenira na preostalih k-1 podskupova (važno je da se pažljivo odabere konstanta k). Ovaj postupak se ponavlja k puta, gde se svaki put menja podskup koji se koristi za testiranje. K-Fold CV greška se dobija tako što se uzme srednja vrednost od svih k ponavljanja algoritma.
 
 Obično skup podataka delimo na trening skup, validacioni skup i test skup. Npr. 60%, 20%, 20%.
 Na ovaj način smo iskoristili samo 60% podataka za trening.
-Ovaj proces se može zameniti sa K-Fold CV, zato što u svakoj od K iteracija mi koristimo drugačiji podksup za validaciju,
-a preostalih k-1 podskupova za trening
+Ovaj proces se može zameniti sa K-Fold CV, zato što u svakoj od k iteracija mi koristimo drugačiji podksup za validaciju,
+a preostalih k-1 podskupova za trening.
 
 =====================
 
