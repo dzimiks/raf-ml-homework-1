@@ -7,7 +7,7 @@ import numpy as np
 import math
 import os
 
-VOCAB_SIZE = 500
+VOCAB_SIZE = 1000
 
 
 class MultinomialNaiveBayes:
@@ -186,14 +186,28 @@ def get_top_k(corpus, labels, k, label):
 				count_dict.setdefault(word, 0)
 				count_dict[word] += 1
 
-	print(cnt)
 	return sorted(count_dict, key=count_dict.get, reverse=True)[:k]
+
+
+def LR(corpus, labels, word):
+	pos_count = 0
+	neg_count = 0
+	for i in range(len(corpus)):
+		doc = corpus[i]
+		if labels[i] == 1:
+			pos_count += doc.count(word)
+		else:
+			neg_count += doc.count(word)
+
+	print(word, pos_count, neg_count)
+	return (pos_count / neg_count) if pos_count > 9 and neg_count > 9 else 0
 
 
 def main():
 	np.set_printoptions(precision=12, linewidth=200)
 
 	corpus, labels = read_data()
+	corpus = clean_data(corpus)
 	print('corpus len = ', len(corpus))
 
 	limit = math.floor(len(corpus) * 0.80)
@@ -201,14 +215,11 @@ def main():
 	train_labels = labels[:limit]
 
 	test_corpus = corpus[limit:]
-	test_corpus = clean_data(test_corpus)
-
 	test_labels = labels[limit:]
 
 	print(len(train_corpus), len(train_labels))
 	print(len(test_corpus), len(test_labels))
 
-	train_corpus = clean_data(train_corpus)
 	vocab = create_vocab(train_corpus)
 	print(vocab)
 	X, Y = create_feature_matrix(train_corpus, train_labels, vocab)
@@ -261,6 +272,13 @@ def main():
 
 	print('Top 5 in negative', get_top_k(train_corpus, train_labels, 5, 0))
 	print('Top 5 in postiive', get_top_k(train_corpus, train_labels, 5, 1))
+
+	print(LR(corpus, labels, 'movi'))
+	print(LR(corpus, labels, 'good'))
+	print(LR(corpus, labels, 'bad'))
+	print(LR(corpus, labels, 'like'))
+	print(LR(corpus, labels, 'great'))
+	print(LR(corpus, labels, 'dzimi')) # treba 0
 
 
 if __name__ == '__main__':
