@@ -7,7 +7,7 @@ import numpy as np
 import math
 import os
 
-VOCAB_SIZE = 10000
+VOCAB_SIZE = 2000
 
 
 class MultinomialNaiveBayes:
@@ -203,7 +203,12 @@ def main():
 	model = MultinomialNaiveBayes(nb_classes=2, nb_words=VOCAB_SIZE, pseudocount=1)
 	model.fit(X, Y)
 
-	success = 0
+	correct_pred = 0
+	TP = 0
+	FP = 0
+	TN = 0
+	FN = 0
+
 	print()
 	for i in range(len(test_corpus)):
 		doc = get_clean_doc(test_corpus[i])
@@ -211,16 +216,28 @@ def main():
 		bow = create_bow(doc, vocab)
 
 		prediction = model.predict(bow)
-		# print(test_corpus[i])
 		# print('Predicted class (with log): ', class_names[prediction], class_names[test_labels[i]])
 
 		if prediction == test_labels[i]:
-			success += 1
-	# prediction = model.predict_multiply(test_bow)
-	# print('Predicted class (without log): ', class_names[prediction])
+			correct_pred += 1
 
-	print(success / len(test_corpus))
+		if prediction == 1:
+			if test_labels[i] == 1:
+				TP += 1
+			else:
+				FP += 1
+		else:
+			if test_labels[i] == 0:
+				TN += 1
+			else:
+				FN += 1
 
+	acc = correct_pred / len(test_corpus)
+	print(TP + FN + FP + TN)
+	conf_mat = [[TP, FN], [FP, TN]]
+
+	print(conf_mat)
+	print('Accuracy = {}'.format(acc))
 
 if __name__ == '__main__':
 	main()
