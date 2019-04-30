@@ -9,9 +9,7 @@ TRAIN_CONST = 80  # procentualno koliko podataka koristimo za trening
 
 
 # klasa za KNN
-
 class KNN:
-
 	def __init__(self, numOfFeatures, numOfClasses, train_data, coeff):
 		self.numOfFeatures = numOfFeatures
 		self.numOfClasses = numOfClasses
@@ -19,12 +17,11 @@ class KNN:
 		self.k = coeff
 
 		self.X = tf.placeholder(shape=(None, numOfFeatures), dtype=tf.float32)
-		self.Y = tf.placeholder(shape=(None), dtype=tf.int32)
-		self.T = tf.placeholder(shape=(numOfFeatures), dtype=tf.float32)
+		self.Y = tf.placeholder(shape=None, dtype=tf.int32)
+		self.T = tf.placeholder(shape=numOfFeatures, dtype=tf.float32)
 		self.predRes = []
 
-		dists = tf.sqrt(tf.reduce_sum(tf.square(tf.subtract(self.X, self.T)),
-									  axis=1))
+		dists = tf.sqrt(tf.reduce_sum(tf.square(tf.subtract(self.X, self.T)), axis=1))
 		_, idxs = tf.nn.top_k(-dists, self.k)
 
 		self.classes = tf.gather(self.Y, idxs)
@@ -44,10 +41,9 @@ class KNN:
 		with tf.Session() as sess:
 
 			sess.run(tf.global_variables_initializer())
-
 			numOfQueries = test_data['x'].shape[0]
-
 			matches = 0
+
 			for i in range(numOfQueries):
 				hyp_val = sess.run(self.hyp, feed_dict={self.X: self.data['x'],
 														self.Y: self.data['y'],
@@ -66,10 +62,8 @@ class KNN:
 
 		with tf.Session() as sess:
 			sess.run(tf.global_variables_initializer())
-
 			numOfQueries = len(test_data)
 
-			matches = 0
 			for i in range(numOfQueries):
 				hyp_val = sess.run(self.hyp, feed_dict={self.X: self.data['x'],
 														self.Y: self.data['y'],
@@ -81,12 +75,11 @@ class KNN:
 
 if __name__ == '__main__':
 	# Učitavanje podataka iz csv file-a
-
 	filename = 'data/iris.csv'
 	data = dict()
 	numOfFeatures = 2
 	data['x'] = np.loadtxt(filename, delimiter=',', skiprows=1, usecols=(range(0, numOfFeatures)))
-	data['y'] = np.loadtxt(filename, dtype='str', delimiter=',', skiprows=1, usecols=(4))
+	data['y'] = np.loadtxt(filename, dtype='str', delimiter=',', skiprows=1, usecols=4)
 
 	for i in range(0, len(data['y'])):
 		if data['y'][i] == 'Iris-setosa':
@@ -97,14 +90,12 @@ if __name__ == '__main__':
 			data['y'][i] = 2
 
 	# Nasumično mešanje.
-
 	nb_samples = data['x'].shape[0]
 	indices = np.random.permutation(nb_samples)
 	data['x'] = data['x'][indices]
 	data['y'] = data['y'][indices]
 
 	# deljenje podataka za trening i test po TRAIN_CONST
-
 	train_data = dict()
 	test_data = dict()
 
@@ -149,7 +140,6 @@ if __name__ == '__main__':
 	plt.contourf(x1, x2, pred_plot, cmap=classes_cmap, alpha=0.7)
 
 	# Crtamo sve podatke preko.
-
 	idxs_0 = []
 
 	for i in range(0, len(train_data['y'])):
