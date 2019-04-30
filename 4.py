@@ -7,7 +7,7 @@ import numpy as np
 import math
 import os
 
-VOCAB_SIZE = 1000
+VOCAB_SIZE = 10000
 
 
 class MultinomialNaiveBayes:
@@ -190,6 +190,10 @@ def get_top_k(corpus, labels, k, label):
 
 
 def LR(corpus, labels, word):
+	print(word)
+	porter = PorterStemmer()
+	word = word.lower()
+	word = porter.stem(word)
 	pos_count = 0
 	neg_count = 0
 	for i in range(len(corpus)):
@@ -199,7 +203,7 @@ def LR(corpus, labels, word):
 		else:
 			neg_count += doc.count(word)
 
-	print(word, pos_count, neg_count)
+	print('pos =', pos_count, 'neg =', neg_count)
 	return (pos_count / neg_count) if pos_count > 9 and neg_count > 9 else 0
 
 
@@ -270,16 +274,25 @@ def main():
 	print('Accuracy = {}'.format(acc))
 	print('Confussion matrix', conf_mat)
 
-	print('Top 5 in negative', get_top_k(train_corpus, train_labels, 5, 0))
-	print('Top 5 in postiive', get_top_k(train_corpus, train_labels, 5, 1))
+	print('Top 5 in negative', get_top_k(corpus, labels, 5, 0))
+	print('Top 5 in postiive', get_top_k(corpus, labels, 5, 1))
 
-	print(LR(corpus, labels, 'movi'))
-	print(LR(corpus, labels, 'good'))
-	print(LR(corpus, labels, 'bad'))
-	print(LR(corpus, labels, 'like'))
-	print(LR(corpus, labels, 'great'))
-	print(LR(corpus, labels, 'dzimi')) # treba 0
+	test_words = ['movie', 'good', 'bad', 'like', 'great', 'one', 'terrible', 'fantastic', 'nice', 'excellent', 'dzimiks']
+	for word in test_words:
+		print('LR =', LR(corpus, labels, word))
+		print()
 
 
 if __name__ == '__main__':
 	main()
+
+# Liste najcescih 5 reci u pozitivnim i negativnim kritikama su veoma slicne. To se desava zbog nekih rijeci koje
+# su vezane generalno za film a ne specificno za pozitivno ili negativno (movie, film, one).
+# Rec like se pojavljuje u oba veoma cesto zato sto ima vise znacenja i moze da znaci poredjenje.
+
+# LR metrika nam govori kakav je odnos pojavljivanja reci u pozitivnim i negativnim kritikama.
+# Rec koja ima visoku LR vrednost je specificna za pozitivne kritike, a rec sa niskim LR je karakteristicna za negativne
+# kritike.
+# Ako rec ima LR priblizno 1 to znaci da se otprilike ravnomerno pojavljuje u obe vrste kritka.
+# Rec fantastic ima LR = 3.15, sto znaci da su kritike koje sadrze tu rec verovatno pozitivne. ili npr excelent ima LR=4
+# Rec terrible ima LR = 0.16, sto znaci da su kritike koje sadrze tu rec verovatno  negativne.
