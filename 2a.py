@@ -55,7 +55,7 @@ def polynomial_regression(input_data, nb_samples, nb_features, color):
 			# U svakoj desetoj epohi ispisujemo prosečan loss.
 			epoch_loss /= nb_samples
 			if (epoch + 1) % 10 == 0:
-				print('Epoch: {}/{}| Avg loss: {:.5f}'.format(epoch + 1, nb_epochs, epoch_loss))
+				print('Epoch: {}/{} | Avg loss: {:.5f}'.format(epoch + 1, nb_epochs, epoch_loss))
 
 		# Ispisujemo i plotujemo finalnu vrednost parametara.
 		w_val = sess.run(w)
