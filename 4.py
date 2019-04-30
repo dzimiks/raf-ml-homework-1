@@ -7,7 +7,7 @@ import numpy as np
 import math
 import os
 
-VOCAB_SIZE = 700
+VOCAB_SIZE = 1500
 
 
 class MultinomialNaiveBayes:
@@ -102,7 +102,7 @@ def clean_data(corpus, labels):
 	for doc in corpus:
 		words = wordpunct_tokenize(doc)
 		words_lower = [w.lower() for w in words]
-		words_stripped = [w.translate(table) for w in words_lower]
+		words_stripped = [w.translate(table) for w in words_lower] # izbaci sve znakove iz rijeci
 		words_filtered = [w for w in words_stripped if w not in stop_punc and w.isalpha()]
 		words_stemmed = [porter.stem(w) for w in words_filtered]
 		# print('Final:', words_stemmed)
@@ -143,7 +143,7 @@ def create_bow(doc, vocab):
 	bow = np.zeros(len(vocab), dtype=np.float64)
 	for word_idx in range(len(vocab)):
 		word = vocab[word_idx]
-		cnt = occ_score(word, doc)
+		cnt = numocc_score(word, doc)
 		bow[word_idx] = cnt
 	return bow
 
@@ -155,18 +155,18 @@ def read_data():
 	for root, _, files in os.walk('./data/imdb/'):
 		for name in files:
 			file_path = os.path.join(root, name)
-			doc = ''
 			with open(file_path, 'r', encoding='utf8') as f:
 				file_data = f.read()
-				doc += file_data
+				corpus.append(file_data)
 
-			corpus.append(doc)
 			label = 1 if 'pos' in file_path else 0
 			labels.append(label)
 
 	indices = np.random.permutation(len(corpus))
+
 	corpus = np.asarray(corpus)
 	corpus = corpus[indices]
+
 	labels = np.asarray(labels)
 	labels = labels[indices]
 
@@ -215,7 +215,8 @@ def main():
 		# print(test_corpus[i])
 		print('Predicted class (with log): ', class_names[prediction], class_names[test_labels[i]])
 
-		success += prediction == test_labels[i]
+		if prediction == test_labels[i]:
+			success += 1
 	# prediction = model.predict_multiply(test_bow)
 	# print('Predicted class (without log): ', class_names[prediction])
 
