@@ -31,7 +31,10 @@ def polynomial_regression(input_data, nb_samples, nb_features, lambda_param, col
 	# Korak 3: Funkcija troška i optimizacija.
 	# L2 regularizacija.
 	Y_col = tf.reshape(Y, (-1, 1), name='Y_col')
-	loss = tf.add(tf.reduce_mean(tf.square(hyp - Y_col)), lambda_param * tf.nn.l2_loss(w), name='loss')
+
+	Lambda = tf.constant(lambda_param, dtype=tf.float32, name='lambda')
+
+	loss = tf.add(tf.reduce_mean(tf.square(hyp - Y_col)), tf.multiply(Lambda, tf.nn.l2_loss(w)), name='loss')
 
 	# Prelazimo na AdamOptimizer jer se prost GradientDescent lose snalazi sa
 	# slozenijim funkcijama.
@@ -118,6 +121,14 @@ def main():
 	plt.ylabel('Loss')
 	plt.show()
 
+	writer = tf.summary.FileWriter('.')
+	writer.add_graph(tf.get_default_graph())
+	writer.flush()
+
 
 if __name__ == '__main__':
 	main()
+
+
+# Najmanji loss se dobije kad je lambda=0
+# Kako raste lambda tako raste i loss
