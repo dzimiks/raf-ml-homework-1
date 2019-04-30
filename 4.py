@@ -272,12 +272,13 @@ def main():
 	conf_mat = [[TN, FP], [FN, TP]]
 
 	print('Accuracy = {}'.format(acc))
-	print('Confussion matrix', conf_mat)
+	print('Confusion matrix', conf_mat)
 
 	print('Top 5 in negative', get_top_k(corpus, labels, 5, 0))
-	print('Top 5 in postiive', get_top_k(corpus, labels, 5, 1))
+	print('Top 5 in positive', get_top_k(corpus, labels, 5, 1))
 
-	test_words = ['movie', 'good', 'bad', 'like', 'great', 'one', 'terrible', 'fantastic', 'nice', 'excellent', 'dzimiks']
+	test_words = ['movie', 'good', 'bad', 'like', 'great', 'one', 'terrible',
+				  'fantastic', 'nice', 'excellent', 'dzimiks']
 	for word in test_words:
 		print('LR =', LR(corpus, labels, word))
 		print()
@@ -295,4 +296,4 @@ if __name__ == '__main__':
 # kritike.
 # Ako rec ima LR priblizno 1 to znaci da se otprilike ravnomerno pojavljuje u obe vrste kritka.
 # Rec fantastic ima LR = 3.15, sto znaci da su kritike koje sadrze tu rec verovatno pozitivne. ili npr excelent ima LR=4
-# Rec terrible ima LR = 0.16, sto znaci da su kritike koje sadrze tu rec verovatno  negativne.
+# Rec terrible ima LR = 0.16, sto znaci da su kritike koje sadrze tu rec verovatno negativne.
