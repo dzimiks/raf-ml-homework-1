@@ -1,8 +1,8 @@
-from nltk import FreqDist
 from nltk.tokenize import wordpunct_tokenize
 from string import punctuation
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+
 import numpy as np
 import math
 import os
@@ -234,10 +234,11 @@ def main():
 
 	acc = correct_pred / len(test_corpus)
 	print(TP + FN + FP + TN)
-	conf_mat = [[TP, FN], [FP, TN]]
+	conf_mat = [[TN, FP], [FN, TP]]
 
 	print(conf_mat)
 	print('Accuracy = {}'.format(acc))
+
 
 if __name__ == '__main__':
 	main()
