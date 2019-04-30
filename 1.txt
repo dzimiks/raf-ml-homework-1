@@ -23,8 +23,8 @@ koji se može ubaciti u mrežu dubokog učenja ili se jednostavno traži da se o
 2. Šta je "​k-fold cross-validation"​ i koji proces zamenjuje?
 
 K-Fold Cross validacija je tehnika koja podrazumeva nasumičnu podelu skupa podataka na k podskupova otprilike jednakih
-veličina. Jedan podskup se koristi za testiranje, a model se trenira na preostalih k-1 podskupova (važno je da se pažljivo odabere konstanta k). 
-Ovaj postupak se ponavlja k puta, gde se svaki put menja podskup koji se koristi za testiranje. 
+veličina. Jedan podskup se koristi za testiranje, a model se trenira na preostalih k-1 podskupova (važno je da se pažljivo 
+odabere konstanta k).  Ovaj postupak se ponavlja k puta, gde se svaki put menja podskup koji se koristi za testiranje. 
 K-Fold CV greška se dobija tako što se uzme srednja vrednost od svih k ponavljanja algoritma.
 
 Obično skup podataka delimo na trening skup, validacioni skup i test skup. Npr. 60%, 20%, 20%.
