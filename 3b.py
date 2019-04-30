@@ -1,3 +1,4 @@
+# 3b
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
@@ -10,17 +11,19 @@ TRAIN_CONST = 80  # procentualno koliko podataka koristimo za trening
 # klasa za KNN
 
 class KNN:
+
 	def __init__(self, numOfFeatures, numOfClasses, train_data, coeff):
 		self.numOfFeatures = numOfFeatures
 		self.numOfClasses = numOfClasses
 		self.data = train_data
-		self.k = coeff;
+		self.k = coeff
 
 		self.X = tf.placeholder(shape=(None, numOfFeatures), dtype=tf.float32)
-		self.Y = tf.placeholder(shape=None, dtype=tf.int32)
-		self.T = tf.placeholder(shape=numOfFeatures, dtype=tf.float32)
+		self.Y = tf.placeholder(shape=(None), dtype=tf.int32)
+		self.T = tf.placeholder(shape=(numOfFeatures), dtype=tf.float32)
 
-		dists = tf.sqrt(tf.reduce_sum(tf.square(tf.subtract(self.X, self.T)), axis=1))
+		dists = tf.sqrt(tf.reduce_sum(tf.square(tf.subtract(self.X, self.T)),
+									  axis=1))
 		_, idxs = tf.nn.top_k(-dists, self.k)
 
 		self.classes = tf.gather(self.Y, idxs)
@@ -57,81 +60,82 @@ class KNN:
 			return accuracy
 
 
-# Učitavanje podataka iz csv file-a
+if __name__ == '__main__':
+	# Učitavanje podataka iz csv file-a
 
-filename = 'data/iris.csv'
-data = dict()
-numOfFeatures = 2
-data['x'] = np.loadtxt(filename, delimiter=',', skiprows=1, usecols=(range(0, numOfFeatures)))
-data['y'] = np.loadtxt(filename, dtype='str', delimiter=',', skiprows=1, usecols=4)
+	filename = 'data/iris.csv'
+	data = dict()
+	numOfFeatures = 2
+	data['x'] = np.loadtxt(filename, delimiter=',', skiprows=1, usecols=(range(0, numOfFeatures)))
+	data['y'] = np.loadtxt(filename, dtype='str', delimiter=',', skiprows=1, usecols=(4))
 
-for i in range(0, len(data['y'])):
-	if data['y'][i] == 'Iris-setosa':
-		data['y'][i] = 0
-	elif data['y'][i] == 'Iris-versicolor':
-		data['y'][i] = 1
-	else:
-		data['y'][i] = 2
+	for i in range(0, len(data['y'])):
+		if data['y'][i] == 'Iris-setosa':
+			data['y'][i] = 0
+		elif data['y'][i] == 'Iris-versicolor':
+			data['y'][i] = 1
+		else:
+			data['y'][i] = 2
 
-# crtanje incijalnog grafika i ispis podataka
+	# crtanje incijalnog grafika i ispis podataka
 
-# print(len(data['x']))
-# print(len(data['y']))
-# print(data['x'])
-# print(data['y'])
-# plt.xlim(8)
-# plt.xlabel('sepal_length')
-# plt.ylim(5)
-# plt.ylabel('sepal_width')
-# plt.scatter(data['x'][:,0], data['x'][:,1], edgecolors='r')
+	# print(len(data['x']))
+	# print(len(data['y']))
+	# print(data['x'])
+	# print(data['y'])
+	# plt.xlim(8)
+	# plt.xlabel('sepal_length')
+	# plt.ylim(5)
+	# plt.ylabel('sepal_width')
+	# plt.scatter(data['x'][:,0], data['x'][:,1], edgecolors='r')
 
-# Nasumično mešanje.
+	# Nasumično mešanje.
 
-nb_samples = data['x'].shape[0]
-indices = np.random.permutation(nb_samples)
-data['x'] = data['x'][indices]
-data['y'] = data['y'][indices]
+	nb_samples = data['x'].shape[0]
+	indices = np.random.permutation(nb_samples)
+	data['x'] = data['x'][indices]
+	data['y'] = data['y'][indices]
 
-# print(data['y'])
+	# print(data['y'])
 
-# deljenje podataka za trening i test po TRAIN_CONST
+	# deljenje podataka za trening i test po TRAIN_CONST
 
-train_data = dict()
-test_data = dict()
+	train_data = dict()
+	test_data = dict()
 
-totalDataLen = len(data['x'])
-totalTrainLen = int((totalDataLen * TRAIN_CONST) / 100);
-train_data['x'] = data['x'][0:totalTrainLen]
-train_data['y'] = data['y'][0:totalTrainLen]
-test_data['x'] = data['x'][totalTrainLen:totalDataLen]
-test_data['y'] = data['y'][totalTrainLen:totalDataLen]
+	totalDataLen = len(data['x'])
+	totalTrainLen = int((totalDataLen * TRAIN_CONST) / 100)
+	train_data['x'] = data['x'][0:totalTrainLen]
+	train_data['y'] = data['y'][0:totalTrainLen]
+	test_data['x'] = data['x'][totalTrainLen:totalDataLen]
+	test_data['y'] = data['y'][totalTrainLen:totalDataLen]
 
-# plt.scatter(train_data['x'][:,0], train_data['x'][:,1], edgecolors = 'b')
+	# plt.scatter(train_data['x'][:,0], train_data['x'][:,1], edgecolors = 'b')
 
-# ispis rezultata
-numOfClasses = 3
+	### ispis rezultata
+	numOfClasses = 3
 
-different_k = []
-accuracy_res = []
-average_accuracy = 0
+	different_k = []
+	accuracy_res = []
+	average_accuracy = 0
 
-for i in range(1, 16):
-	coeff = i
-	knn = KNN(numOfFeatures, numOfClasses, train_data, coeff)
-	accuracy = knn.predict(test_data)
-	different_k.append(i)
-	accuracy_res.append(accuracy)
-	average_accuracy += accuracy
+	for i in range(1, 16):
+		coeff = i
+		knn = KNN(numOfFeatures, numOfClasses, train_data, coeff)
+		accuracy = knn.predict(test_data)
+		different_k.append(i)
+		accuracy_res.append(accuracy)
+		average_accuracy += accuracy
 
-average_accuracy /= 15
-print("Average accuracy: " + str(average_accuracy))
-fig, drawing = plt.subplots()
+	average_accuracy /= 15
+	print("Average accuracy: " + str(average_accuracy))
+	fig, drawing = plt.subplots()
 
-drawing.plot(different_k, accuracy_res, color='red')
-drawing.set(xlabel='Value k in KNN', ylabel='Accuracy', title='Dependence Accuracy of value k')
+	drawing.plot(different_k, accuracy_res, color='red')
+	drawing.set(xlabel='Value k in KNN', ylabel='Accuracy', title='Dependence Accuracy of value k')
 
-drawing.grid()
-plt.show()
+	drawing.grid()
+	plt.show()
 
 # Na osnovu više pokretanja programa i iscrtavanja grafika, mogu se zaključiti sledeće stvari:
 # - Accuracy varira od [0.6, 0.9] na većini grafika 
