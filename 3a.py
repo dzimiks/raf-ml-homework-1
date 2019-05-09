@@ -16,11 +16,13 @@ class KNN:
 		self.data = train_data
 		self.k = coeff
 
+		# Gradimo model, X je matrica podataka a Q je vektor koji predstavlja upit.
 		self.X = tf.placeholder(shape=(None, numOfFeatures), dtype=tf.float32)
 		self.Y = tf.placeholder(shape=None, dtype=tf.int32)
 		self.T = tf.placeholder(shape=numOfFeatures, dtype=tf.float32)
 		self.predRes = []
 
+		# Racunamo kvadriranu euklidsku udaljenost i uzimamo minimalnih k.
 		dists = tf.sqrt(tf.reduce_sum(tf.square(tf.subtract(self.X, self.T)), axis=1))
 		_, idxs = tf.nn.top_k(-dists, self.k)
 
