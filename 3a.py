@@ -16,7 +16,7 @@ class KNN:
 		self.data = train_data
 		self.k = coeff
 
-		# Gradimo model, X je matrica podataka a Q je vektor koji predstavlja upit.
+		# Gradimo model, X je matrica podataka a T je vektor koji predstavlja upit.
 		self.X = tf.placeholder(shape=(None, numOfFeatures), dtype=tf.float32)
 		self.Y = tf.placeholder(shape=None, dtype=tf.int32)
 		self.T = tf.placeholder(shape=numOfFeatures, dtype=tf.float32)
